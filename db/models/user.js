@@ -1,7 +1,38 @@
-module.exports = (mongoose, conn) => conn.model('User', new mongoose.Schema({
-    login : { type : String, unique : true},
-    password : { type : String}
-}));
+module.exports = (mongoose, connection) => {
+    const Experience = new mongoose.Schema({
+
+    })
+    
+    const Characters =  new mongoose.Schema({
+        charName: {
+            type: String,
+            unique: true,
+            require: true
+        },
+        charFamily: {
+            type: String,
+            unique: true
+        },
+        race: String
+    })
+    connection.model('User', new mongoose.Schema({
+    userName : { 
+        type : String,
+        required: true
+    },
+    password : { 
+        type : String, 
+        required: true 
+    },
+    email : { 
+        type: String,
+        required: true 
+    }
+    }))
+}
+
+
+
   
 /*
 const mongoose = require('mongoose')
