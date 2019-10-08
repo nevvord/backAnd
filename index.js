@@ -1,7 +1,8 @@
-const   express     =   require('express')
-const   bodyParser  =   require('body-parser')
-const   db          =   require('./db/index')()
-const   cors        =   require('cors')
+const   express         =   require('express')
+const   bodyParser      =   require('body-parser')
+const   cookieparser    =   require('cookie-parser')
+const   db              =   require('./db/index')()
+const   cors            =   require('cors')
 
 //===== Glogal CFG =====
 global.db = db;
@@ -17,6 +18,7 @@ const app = express()
 //===== APP USE =====
 app.use(bodyParser.json())
 app.use(cors())
+app.use(cookieparser())
 
 //===== Routes =====
 const auth = require('./routes/auth')

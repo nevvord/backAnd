@@ -32,7 +32,12 @@ function login (req, res) {
       }
 
       jwt.sign({ email : user.email, _id : user._id }, privateKey, { expiresIn: 60 * 60 }, (err, token) => {
-        res.send({ err, token })
+        res
+          .cookie('auth', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 15
+          })
+          .send({ err, token })
       })
     })
   })
