@@ -1,20 +1,4 @@
-module.exports = (mongoose, connection) => {
-    const Experience = new mongoose.Schema({
-
-    })
-    
-    const Characters =  new mongoose.Schema({
-        charName: {
-            type: String,
-            unique: true,
-            require: true
-        },
-        charFamily: {
-            type: String,
-            unique: true
-        },
-        race: String
-    })
+module.exports = (mongoose, connection) => 
     connection.model('User', new mongoose.Schema({
     userName : { 
         type : String,
@@ -29,7 +13,6 @@ module.exports = (mongoose, connection) => {
         required: true 
     }
     }))
-}
 
 
 
