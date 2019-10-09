@@ -1,7 +1,6 @@
 const   mongoose    =   require('mongoose')
 //===== Config =====
-const   config      =   require('config')
-const   dbConfig    =   config.get('Customer.dbConfig')
+const   { dbConfig }    =   require('config')
 //===== DB =====
 const   connection  =   mongoose.createConnection(`mongodb://${dbConfig.host}/${dbConfig.name}`, {useNewUrlParser: true})
 
@@ -16,6 +15,7 @@ module.exports = () => {
     //===== Return models =====
     return{
         connection,
-        User : require('./models/user')(mongoose, connection)
+        User : require('./models/user')(mongoose, connection),
+        RefreshToken: require('./models/refreshToken')(mongoose, connection)
     }
 }

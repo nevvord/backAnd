@@ -1,10 +1,12 @@
 const bcrypt = require('bcryptjs')
+const uuid = require('uuid')
 const jwt = require('jsonwebtoken')
-const privateKey = 'nevvord'
+const {privatKey} = require('config')
 
-function login (req, res) {
-  const email    = req.body.email.toLowerCase()
+function login(req, res) {
+  const email = req.body.email.toLowerCase()
   const password = req.body.password.toString()
+  
 
   if (!email) {
     return res.status(400).send('No email')
@@ -14,7 +16,9 @@ function login (req, res) {
     return res.status(400).send('No password')
   }
 
-  db.User.findOne({ email }).select('+password').lean().exec((err, user) => {
+  db.User.findOne({
+    email
+  }).select('password').lean().exec((err, user) => {
     if (err) {
       return res.sendStatus(500)
     }
@@ -30,18 +34,26 @@ function login (req, res) {
       if (!passwordMatch) {
         return res.sendStatus(401)
       }
+      const refreshToken = uuid()
+      const bodyToken = {
+        email: email, 
+        _id: user._id,  
+        refreshToken : refreshToken, 
+        expToken: Date.now() + 1000 * 60 * 15,
+        expRefresh: Date.now() + 1000 * 60 * 60 * 24 * 6
+      }
+      console.log(bodyToken);
+      
 
-      jwt.sign({ email : user.email, _id : user._id }, privateKey, { expiresIn: 60 * 60 }, (err, token) => {
-        res
-          .cookie('auth', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 15
-          })
-          .send({ err, token })
+      jwt.sign(bodyToken, privatKey, (err, token) => {
+        db.RefreshToken.create({
+          userId: user._id,
+          token: refreshToken
+        })
+        res.send({err, token})
       })
     })
   })
 }
 
 module.exports = login
-

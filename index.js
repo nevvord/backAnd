@@ -9,8 +9,7 @@ global.db = db;
 global.express = express;
 
 //===== Config sets =====
-const config = require('config')
-const serverConfig = config.get('Customer.ServerConfig')
+const { serverConfig } = require('config')
 
 //===== Set up express APP =====
 const app = express()
