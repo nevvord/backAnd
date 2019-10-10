@@ -18,7 +18,7 @@ function login(req, res) {
 
   db.User.findOne({
     email
-  }).select('password').lean().exec((err, user) => {
+  }).lean().exec((err, user) => {
     if (err) {
       return res.sendStatus(500)
     }
@@ -42,15 +42,36 @@ function login(req, res) {
         expToken: Date.now() + 1000 * 60 * 15,
         expRefresh: Date.now() + 1000 * 60 * 60 * 24 * 6
       }
-      console.log(bodyToken);
-      
 
       jwt.sign(bodyToken, privatKey, (err, token) => {
-        db.RefreshToken.create({
-          userId: user._id,
-          token: refreshToken
+        db.RefreshToken.findOne({ userId: user._id }).lean().exec((err, refTok) => {
+          if (err) {
+           return(
+             res
+              .status(500)
+              .send({
+                msg: "Ошибка при поиске рефрештокена"
+              }) 
+           ) 
+          }
+          console.log("row 55")
+          if (refTok) {
+            db.RefreshToken.deleteOne({ _id: refTok._id }, err => {
+              if (err) {
+                return res
+                          .status(500)
+                          .send({msg: "Не получилось удалить"})
+              }
+            })  
+          }
+          db.RefreshToken.create({
+            userId: user._id,
+            token: refreshToken
+          })
+          res.send({err, token, user: {
+            userName: user.userName
+          }})
         })
-        res.send({err, token})
       })
     })
   })

@@ -12,7 +12,7 @@ function dateChack (date) {
 function refresh(req, res) {
     const { token } = req.body
     const decodeToken = jwt.decode(token)
-    console.log(decodeToken);
+    console.log(decodeToken)
     
     if (token) {
         if (dateChack(decodeToken.expToken) === false) {
@@ -41,8 +41,9 @@ function refresh(req, res) {
                             auth: false
                         })
                     }
-                    console.log('Row 43');
+                    console.log('Row 44')
                     if (!curentToken) {
+
                         return res.status(401).send({
                             msg: "Refresh token not found",
                             status: "ref404",
@@ -69,7 +70,7 @@ function refresh(req, res) {
                             }
                             jwt.sign(bodyToken, privatKey, (err, token) => {
                                 db.RefreshToken.create({
-                                    userID: decodeToken._id,
+                                    userId: decodeToken._id,
                                     token: refreshToken
                                 })
                                 return res.status(302).send({ err, token,
@@ -83,11 +84,15 @@ function refresh(req, res) {
                 })
             }
         }else{
-            console.log('Auth success');
             
-            return res.status(200).send({
-                "auth": true 
-            })
+            console.log('Auth success, row 88')
+            res
+                .status(200)
+                .send({
+                    "auth": true 
+                })
+            console.log("row92")
+            
         }
     }else{
         console.log("Token dont instance")
