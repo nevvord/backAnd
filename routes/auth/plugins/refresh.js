@@ -11,10 +11,10 @@ function dateChack (date) {
 
 function refresh(req, res) {
     const { token } = req.body
-    const decodeToken = jwt.decode(token)
+    const decodeToken = jwt.verify(token, privatKey)
     console.log(decodeToken)
     
-    if (token) {
+    if (decodeToken) {
         if (dateChack(decodeToken.expToken) === false) {
             console.log(decodeToken.expToken, dateChack(decodeToken.expToken))
             if (dateChack(decodeToken.expRefresh) === false) {
@@ -62,6 +62,7 @@ function refresh(req, res) {
                             }
                             const refreshToken = uuid()
                             const bodyToken = {
+                                userName: decodeToken.userName,
                                 email: decodeToken.email,
                                 _id: decodeToken._id,
                                 refreshToken: refreshToken,
@@ -76,7 +77,12 @@ function refresh(req, res) {
                                 return res.status(302).send({ err, token,
                                     msg: "New JWToken has been created",
                                     status: "newToken200",
-                                    auth: true
+                                    auth: true,
+                                    user: {
+                                        userName: decodeToken.userName,
+                                        email: decodeToken.email,
+                                        id: decodeToken._id
+                                    }
                                 })
                             })
                         })
@@ -89,7 +95,12 @@ function refresh(req, res) {
             res
                 .status(200)
                 .send({
-                    "auth": true 
+                    auth: true,
+                    user: {
+                        userName: decodeToken.userName,
+                        email: decodeToken.email,
+                        id: decodeToken._id
+                    }
                 })
             console.log("row92")
             

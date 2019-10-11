@@ -32,10 +32,13 @@ function login(req, res) {
         return res.sendStatus(500)
       }
       if (!passwordMatch) {
-        return res.sendStatus(401)
+        console.log("ROW: 35. passwordMatch not instance")
+        
+        return res.status(401).send('Неверный пароль')
       }
       const refreshToken = uuid()
       const bodyToken = {
+        userName: user.userName,
         email: email, 
         _id: user._id,  
         refreshToken : refreshToken, 
@@ -69,7 +72,9 @@ function login(req, res) {
             token: refreshToken
           })
           res.send({err, token, user: {
-            userName: user.userName
+            userName: user.userName,
+            email: user.email,
+            _id: user._id
           }})
         })
       })
